@@ -1,0 +1,358 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = """
+[](ggreen0)\
+$os\
+$username\
+[](bg:ggreen1 fg:ggreen0)\
+$directory\
+[](bg:ggreen2 fg:ggreen1)\
+$git_branch\
+$git_status\
+[](fg:ggreen2 bg:ggreen3)\
+$c\
+$rust\
+$golang\
+$nodejs\
+$php\
+$java\
+$kotlin\
+$haskell\
+$python\
+[](fg:ggreen3 bg:ggreen4)\
+$conda\
+[](fg:ggreen4 bg:statusline)\
+$time\
+[ ](fg:statusline)\
+$cmd_duration\
+$status\
+$line_break\
+$character
+"""
+
+palette = 'onedark_warmer'
+
+[os]
+disabled = false
+style = "bg:ggreen0 fg:crust"
+
+[os.symbols]
+Windows = ""
+Ubuntu = "󰕈"
+SUSE = ""
+Raspbian = "󰐿"
+Mint = "󰣭"
+Macos = "󰀵"
+Manjaro = ""
+Linux = "󰌽"
+Gentoo = "󰣨"
+Fedora = "󰣛"
+Alpine = ""
+Amazon = ""
+Android = ""
+AOSC = ""
+Arch = "󰣇"
+Artix = "󰣇"
+CentOS = ""
+Debian = "󰣚"
+Redhat = "󱄛"
+RedHatEnterprise = "󱄛"
+
+[username]
+show_always = true
+style_user = "bg:ggreen0 fg:crust"
+style_root = "bg:ggreen0 fg:crust"
+format = '[ $user ]($style)'
+
+[directory]
+style = "bg:ggreen1 fg:crust"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = "󰝚 "
+"Pictures" = " "
+"Developer" = "󰲋 "
+
+[git_branch]
+symbol = ""
+style = "bg:ggreen2"
+format = '[[ $symbol $branch ](fg:crust bg:ggreen2)]($style)'
+
+[git_status]
+style = "bg:ggreen2"
+conflicted = "🏳"
+ahead = "🏎💨"
+behind = "😰"
+diverged = "😵"
+up_to_date = "✓"
+untracked = "🤷"
+stashed = "📦"
+modified = "📝"
+#FIXME: staged = "[++\($count\)](green)"
+renamed = "👅"
+deleted = "🗑"
+format = '[[($all_status$ahead_behind )](fg:crust bg:ggreen2)]($style)'
+
+[nodejs]
+symbol = ""
+style = "bg:ggreen3"
+format = '[[ $symbol( $version) ](fg:crust bg:ggreen3)]($style)'
+
+[c]
+symbol = " "
+style = "bg:ggreen3"
+format = '[[ $symbol( $version) ](fg:crust bg:ggreen3)]($style)'
+
+[rust]
+symbol = ""
+style = "bg:ggreen3"
+format = '[[ $symbol( $version) ](fg:crust bg:ggreen3)]($style)'
+
+[golang]
+symbol = ""
+style = "bg:ggreen3"
+format = '[[ $symbol( $version) ](fg:crust bg:ggreen3)]($style)'
+
+[php]
+symbol = ""
+style = "bg:ggreen3"
+format = '[[ $symbol( $version) ](fg:crust bg:ggreen3)]($style)'
+
+[java]
+symbol = " "
+style = "bg:ggreen3"
+format = '[[ $symbol( $version) ](fg:crust bg:ggreen3)]($style)'
+
+[kotlin]
+symbol = ""
+style = "bg:ggreen3"
+format = '[[ $symbol( $version) ](fg:crust bg:ggreen3)]($style)'
+
+[haskell]
+symbol = ""
+style = "bg:ggreen3"
+format = '[[ $symbol( $version) ](fg:crust bg:ggreen3)]($style)'
+
+[python]
+symbol = ""
+style = "bg:ggreen3"
+format = '[[ $symbol( $version)(\(#$virtualenv\)) ](fg:crust bg:ggreen3)]($style)'
+
+[docker_context]
+symbol = ""
+style = "bg:ggreen4"
+format = '[[ $symbol( $context) ](fg:crust bg:ggreen4)]($style)'
+
+[conda]
+symbol = "  "
+style = "fg:crust bg:ggreen4"
+format = '[$symbol$environment ]($style)'
+ignore_base = false
+
+[time]
+disabled = false
+time_format = "%R"
+style = "bg:statusline"
+format = '[[  $time ](fg:statusline_txt bg:statusline)]($style)'
+
+[line_break]
+disabled = false
+
+[status]
+disabled = false
+format = '[❮$int: $common_meaning❯](bold fg:crimson)'
+
+[character]
+disabled = false
+success_symbol = '[❯](bold fg:green)'
+error_symbol = '[❯](bold fg:red)'
+vimcmd_symbol = '[❮](bold fg:green)'
+vimcmd_replace_one_symbol = '[❮](bold fg:lavender)'
+vimcmd_replace_symbol = '[❮](bold fg:lavender)'
+vimcmd_visual_symbol = '[❮](bold fg:yellow)'
+
+[cmd_duration]
+show_milliseconds = true
+format = " in $duration "
+style = "bg:lavender"
+disabled = false
+show_notifications = false
+min_time_to_notify = 45000
+
+[palettes.onedark_warmer]
+rosewater = "#f5e0dc"
+flamingo = "#f2cdcd"
+pink = "#f5c2e7"
+mauve = "#cba6f7"
+crimson = "#e01010"
+maroon = "#eba0ac"
+peach = "#fab387"
+teal = "#94e2d5"
+sky = "#89dceb"
+sapphire = "#74c7ec"
+lavender = "#b4befe"
+text = "#cdd6f4"
+subtext1 = "#bac2de"
+subtext0 = "#a6adc8"
+overlay2 = "#9399b2"
+overlay1 = "#7f849c"
+overlay0 = "#6c7086"
+surface2 = "#585b70"
+surface1 = "#45475a"
+surface0 = "#313244"
+base = "#1e1e2e"
+mantle = "#181825"
+crust = "#11111b"
+
+black = "#101012"
+bg = "#303030"
+ggreen0 = "#87d787"
+ggreen1 = "#7ac27a"
+ggreen2 = "#6cac6c"
+ggreen3 = "#5f975f"
+ggreen4 = "#518151"
+ggreen5 = "#446c44"
+green = "#87D787"
+statusline = "#3a3a3a"
+statusline_light = "#444444"
+statusline_txt = "#a99f90"
+
+bg1 = "#2c2d31"
+bg2 = "#35363b"
+bg3 = "#37383d"
+bg_d = "#1b1c1e"
+bg_blue = "#68aee8"
+bg_yellow = "#e2c792"
+fg = "#a7aab0"
+purple = "#bb70d2"
+orange = "#c49060"
+blue = "#57a5e5"
+yellow = "#dbb671"
+cyan = "#51a8b3"
+red = "#de5d68"
+grey = "#5a5b5e"
+light_grey = "#818387"
+dark_cyan = "#2b5d63"
+dark_red = "#833b3b"
+dark_yellow = "#7c5c20"
+dark_purple = "#79428a"
+diff_add = "#282b26"
+diff_delete = "#2a2626"
+diff_change = "#1a2a37"
+diff_text = "#2c485f"
+
+[palettes.catppuccin_mocha]
+rosewater = "#f5e0dc"
+flamingo = "#f2cdcd"
+pink = "#f5c2e7"
+mauve = "#cba6f7"
+red = "#f38ba8"
+maroon = "#eba0ac"
+peach = "#fab387"
+yellow = "#f9e2af"
+green = "#a6e3a1"
+teal = "#94e2d5"
+sky = "#89dceb"
+sapphire = "#74c7ec"
+blue = "#89b4fa"
+lavender = "#b4befe"
+text = "#cdd6f4"
+subtext1 = "#bac2de"
+subtext0 = "#a6adc8"
+overlay2 = "#9399b2"
+overlay1 = "#7f849c"
+overlay0 = "#6c7086"
+surface2 = "#585b70"
+surface1 = "#45475a"
+surface0 = "#313244"
+base = "#1e1e2e"
+mantle = "#181825"
+crust = "#11111b"
+
+[palettes.catppuccin_frappe]
+rosewater = "#f2d5cf"
+flamingo = "#eebebe"
+pink = "#f4b8e4"
+mauve = "#ca9ee6"
+red = "#e78284"
+maroon = "#ea999c"
+peach = "#ef9f76"
+yellow = "#e5c890"
+green = "#a6d189"
+teal = "#81c8be"
+sky = "#99d1db"
+sapphire = "#85c1dc"
+blue = "#8caaee"
+lavender = "#babbf1"
+text = "#c6d0f5"
+subtext1 = "#b5bfe2"
+subtext0 = "#a5adce"
+overlay2 = "#949cbb"
+overlay1 = "#838ba7"
+overlay0 = "#737994"
+surface2 = "#626880"
+surface1 = "#51576d"
+surface0 = "#414559"
+base = "#303446"
+mantle = "#292c3c"
+crust = "#232634"
+
+[palettes.catppuccin_latte]
+rosewater = "#dc8a78"
+flamingo = "#dd7878"
+pink = "#ea76cb"
+mauve = "#8839ef"
+red = "#d20f39"
+maroon = "#e64553"
+peach = "#fe640b"
+yellow = "#df8e1d"
+green = "#40a02b"
+teal = "#179299"
+sky = "#04a5e5"
+sapphire = "#209fb5"
+blue = "#1e66f5"
+lavender = "#7287fd"
+text = "#4c4f69"
+subtext1 = "#5c5f77"
+subtext0 = "#6c6f85"
+overlay2 = "#7c7f93"
+overlay1 = "#8c8fa1"
+overlay0 = "#9ca0b0"
+surface2 = "#acb0be"
+surface1 = "#bcc0cc"
+surface0 = "#ccd0da"
+base = "#eff1f5"
+mantle = "#e6e9ef"
+crust = "#dce0e8"
+
+[palettes.catppuccin_macchiato]
+rosewater = "#f4dbd6"
+flamingo = "#f0c6c6"
+pink = "#f5bde6"
+mauve = "#c6a0f6"
+red = "#ed8796"
+maroon = "#ee99a0"
+peach = "#f5a97f"
+yellow = "#eed49f"
+green = "#a6da95"
+teal = "#8bd5ca"
+sky = "#91d7e3"
+sapphire = "#7dc4e4"
+blue = "#8aadf4"
+lavender = "#b7bdf8"
+text = "#cad3f5"
+subtext1 = "#b8c0e0"
+subtext0 = "#a5adcb"
+overlay2 = "#939ab7"
+overlay1 = "#8087a2"
+overlay0 = "#6e738d"
+surface2 = "#5b6078"
+surface1 = "#494d64"
+surface0 = "#363a4f"
+base = "#24273a"
+mantle = "#1e2030"
+crust = "#181926"

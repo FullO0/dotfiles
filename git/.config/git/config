@@ -1,0 +1,6 @@
+[user]
+	name = Christian Jacobus Van Der Walt
+	email = christian@vanderwalts.net
+[core]
+	excludesfile = /home/christian/.config/git/gitignore_global
+	edior = nvim
