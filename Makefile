@@ -29,7 +29,6 @@ $(STARSHIP_CONFIG): $(COLOR_SRC) $(STARSHIP_BASE)
 	@cat $(STARSHIP_BASE) >> $@
 	@printf "\n" >> $@
 	@cat $(COLORS_SRC) >> $@
-	stow -R starship
 
 $(TMUX_COLORS): $(COLORS_SRC)
 	@echo "Generating Tmux colors..."
@@ -58,3 +57,4 @@ $(NVIM_COLORS): $(COLORS_SRC)
 
 # stows everything
 stow:
+	stow -R $(foreach dir, $(STOW), $(dir))
