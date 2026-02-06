@@ -22,7 +22,7 @@ exec 'set runtimepath+=' . g:vim_home . '/after'
 set backupdir=~/.local/state/vim/backup//
 set directory=~/.local/state/vim/swap//
 set undodir=~/.local/state/vim/undo//
-set viminfofile=~/.local/state/vim/viminfo//
+set viminfofile=~/.local/state/vim/viminfo
 
 "" --- Settings --- ""
 " backups
