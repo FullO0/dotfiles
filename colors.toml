@@ -1,25 +1,21 @@
 [palettes.onedark_ansii]
-
 statusline_txt = "#303030"
-
 black = "#121212" # ANSI 233
 bg0 = "#303030" # ANSI 236 (Lighter/Vibrant Background)
-bg1 = "#3a3a3a" # ANSI 237
-bg2 = "#444444" # ANSI 238
-bg3 = "#4e4e4e" # ANSI 239
+bg1 = "#3a3a3a" # ANSI 237 e.g statusline
+bg2 = "#444444" # ANSI 238 e.g statusline_light
+bg3 = "#4e4e4e" # ANSI 239 e.g statusline_lightest
 bg_d = "#1c1c1c" # ANSI 234 (Darker background)
 bg_blue = "#87d7ff" # ANSI 117 (Ice Blue Background)
 bg_yellow = "#ffd787" # ANSI 222 (Light Gold Background)
 fg = "#bcbcbc" # ANSI 250 (Bright Grey Text)
 purple = "#d787d7" # ANSI 176 (Pinkish Purple)
-
-ggreen0 = "#87d787" # ANSI 114 (Vibrant Mint Green)
-ggreen1 = "#7ac27a" # NON ANSI colors
-ggreen2 = "#6cac6c"
-ggreen3 = "#5f975f"
-ggreen4 = "#518151"
-ggreen5 = "#446c44"
-
+green0 = "#87d787" # ANSI 114 (Vibrant Mint Green)
+green1 = "#7ac27a" # NON ANSI colors
+green2 = "#6cac6c"
+green3 = "#5f975f"
+green4 = "#518151"
+green5 = "#446c44"
 orange = "#ffaf5f" # ANSI 215 (Vibrant Orange)
 blue = "#87d7ff" # ANSI 117 (Ice Blue)
 yellow = "#ffd787" # ANSI 222 (Light Gold)
@@ -35,3 +31,27 @@ diff_add = "#303030" # ANSI 236
 diff_delete = "#303030" # ANSI 236
 diff_change = "#1c1c1c" # ANSI 234
 diff_text = "#008787" # ANSI 30
+
+rosewater = "#f5e0dc"
+flamingo = "#f2cdcd"
+pink = "#f5c2e7"
+mauve = "#cba6f7"
+crimson = "#e01010"
+maroon = "#eba0ac"
+peach = "#fab387"
+teal = "#94e2d5"
+sky = "#89dceb"
+sapphire = "#74c7ec"
+lavender = "#b4befe"
+text = "#cdd6f4"
+subtext1 = "#bac2de"
+subtext0 = "#a6adc8"
+overlay2 = "#9399b2"
+overlay1 = "#7f849c"
+overlay0 = "#6c7086"
+surface2 = "#585b70"
+surface1 = "#45475a"
+surface0 = "#313244"
+base = "#1e1e2e"
+mantle = "#181825"
+crust = "#101012"
