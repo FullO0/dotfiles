@@ -2,8 +2,15 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
-# Enable starship
-eval "$(starship init bash)"
+
+# XDG Base Directory Specification
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_STATE_HOME="$HOME/.local/state"
+
+# Ensure the directories actually exist
+mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_CACHE_HOME" "$XDG_STATE_HOME"
 
 # If not running interactively, don't do anything
 case $- in
@@ -12,7 +19,7 @@ case $- in
 esac
 
 # Change history path to match XDG standards
-export HISTFILE="$HOME/.local/state/bash/history"
+export HISTFILE="$XDG_STATE_HOME/bash/history"
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -43,7 +50,7 @@ fi
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.config/bash/dircolors && eval "$(dircolors -b ~/.config/bash/dircolors)" || eval "$(dircolors -b)"
+    test -r $XDG_CONFIG_HOME/bash/dircolors && eval "$(dircolors -b $XDG_CONFIG_HOME/bash/dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
     alias dir='dir --color=auto'
     alias vdir='vdir --color=auto'
@@ -57,25 +64,27 @@ fi
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
 if [ -f ~/.config/bash/bash_aliases ]; then
     . ~/.config/bash/bash_aliases
 fi
 
-# --- export envirment variables here ---
+# --- export enviroment variables here ---
 # Java
 export JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
-export JASMIN_JAR="$HOME/.local/share/jasmin/jasmin.jar"
+export JASMIN_JAR="$XDG_DATA_HOME/jasmin/jasmin.jar"
 
 # Git
-export GIT_CONFIG="$HOME/.config/git/config"
+export GIT_CONFIG="$XDG_CONFIG_HOME/git/config"
+
+# Vim
+export VIMINIT="source $XDG_CONFIG_HOME/vim/vimrc"
 
 # Add PATH variables
-export PATH="$JAVA_HOME/bin:$PATH"
-export PATH="$JASMIN_JAR:$PATH"
+export PATH="$PATH:$JAVA_HOME/bin"
+export PATH="$PATH:$JASMIN_JAR"
+
+# Enable starship
+eval "$(starship init bash)"
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
