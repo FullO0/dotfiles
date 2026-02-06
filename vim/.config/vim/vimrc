@@ -25,8 +25,26 @@ set undodir=~/.local/state/vim/undo//
 set viminfofile=~/.local/state/vim/viminfo//
 
 "" --- Settings --- ""
+" backups
 set undofile
 set nobackup
 set nowritebackup
 
+" Interface
+set relativenumber
+set cursorline
+set ruler
+set scrolloff=8
+set mouse=a
+
+" Indentation
 set tabstop=4
+set shiftwidth=4
+set autoindent
+set smartindent
+
+" Search
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
