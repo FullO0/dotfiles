@@ -21,7 +21,7 @@ all: apply stow
 create:
 
 # apply the new colorscheme to the whole enviroment
-apply: $(STARSHIP_CONFIG) $(TMUX_COLORS)
+apply: $(STARSHIP_CONFIG) $(TMUX_COLORS) $(NVIM_COLORS)
 
 $(STARSHIP_CONFIG): $(COLOR_SRC) $(STARSHIP_BASE)
 	@echo "Generating Starship Colors..."
