@@ -1,0 +1,32 @@
+" Define the XDG_STATE_HOME for vim
+let g:vim_state = expand('~/.local/state/vim')
+let g:netrw_home = expand('~/.local/state/vim')
+
+" List of directories
+let s:dirs = ['swap', 'undo', 'backup']
+
+" Loop through and create them if they don't exist
+for d in s:dirs
+    let s:target = g:vim_state . '/' . d
+    if !isdirectory(s:target)
+        call mkdir(s:target, 'p', 0700)
+    endif
+endfor
+
+" Set runtime path to use XDG_CONFIG_HOME for vim plugins
+let g:vim_home = expand('~/.config/vim')
+exec 'set runtimepath+=' . g:vim_home
+exec 'set runtimepath+=' . g:vim_home . '/after'
+
+" Set logs and swps to use XDG_STATE_HOME path
+set backupdir=~/.local/state/vim/backup//
+set directory=~/.local/state/vim/swap//
+set undodir=~/.local/state/vim/undo//
+set viminfofile=~/.local/state/vim/viminfo//
+
+"" --- Settings --- ""
+set undofile
+set nobackup
+set nowritebackup
+
+set tabstop=4
