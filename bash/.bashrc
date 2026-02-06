@@ -64,8 +64,8 @@ fi
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # Alias definitions.
-if [ -f ~/.config/bash/bash_aliases ]; then
-    . ~/.config/bash/bash_aliases
+if [ -f $XDG_CONFIG_HOME/bash/bash_aliases ]; then
+    . $XDG_CONFIG_HOME/bash/bash_aliases
 fi
 
 # --- export enviroment variables here ---
@@ -76,12 +76,14 @@ export JASMIN_JAR="$XDG_DATA_HOME/jasmin/jasmin.jar"
 # Git
 export GIT_CONFIG="$XDG_CONFIG_HOME/git/config"
 
-# Vim
-export VIMINIT="source $XDG_CONFIG_HOME/vim/vimrc"
-
 # Add PATH variables
 export PATH="$PATH:$JAVA_HOME/bin"
 export PATH="$PATH:$JASMIN_JAR"
+
+# Force terminal background to be a specific color
+if [[ $TERM != "linux" ]]; then
+    printf "\e]11;#303030\a"  # Replace #1a1b26 with your specific Starship base hex
+fi
 
 # Enable starship
 eval "$(starship init bash)"
