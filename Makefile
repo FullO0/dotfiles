@@ -13,7 +13,7 @@ NVIM_COLORS = $(NVIM_CONFIG_DIR)/lua/custom/generated_colors.lua
 
 STOW = vim tmux starship nvim bash
 
-.PHONY: all stow apply clean create $(TMUX_COLORS)
+.PHONY: all stow apply clean create
 
 all: apply stow
 
