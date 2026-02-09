@@ -17,12 +17,14 @@ BASH_COLORS = bash/.config/bash/bash_color
 
 STOW = vim tmux starship nvim bash
 
-.PHONY: all stow apply clean create
+.PHONY: all stow apply clean install
 
-all: apply stow
+all: create apply stow
 
 # Creates all needed paths for all configs to work
-create:
+install: setup.sh
+	@chmod +x ./setup.sh
+	@./setup.sh
 
 # apply the new colorscheme to the whole enviroment
 apply: $(COLORS_SRC) $(BASH_COLORS) $(STARSHIP_CONFIG) $(TMUX_COLORS) $(NVIM_COLORS)
