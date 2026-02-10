@@ -19,7 +19,7 @@ STOW = vim tmux starship nvim bash
 
 .PHONY: all stow apply clean install
 
-all: create apply stow
+all: install apply stow
 
 # Creates all needed paths for all configs to work
 install: setup.sh
