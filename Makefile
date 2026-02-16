@@ -1,7 +1,7 @@
 COLORS_SRC  = colors.toml
 
 # tmux
-TMUX_CONFIG_DIR = /tmux/.config/tmux
+TMUX_CONFIG_DIR = tmux/.config/tmux
 TMUX_COLORS     = tmux/.config/tmux/colors.tmux.conf
 
 # Starship
