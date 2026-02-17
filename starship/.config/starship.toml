@@ -4,7 +4,7 @@ palette = "onedark_ansii"
 
 format = """
 [](green0)\
-$os\
+[󰕈](bg:green0 fg:black)\
 $username\
 [](bg:green1 fg:green0)\
 $directory\
@@ -33,7 +33,7 @@ $character
 """
 
 [os]
-disabled = false
+disabled = true
 style = "bg:green0 fg:black"
 
 [os.symbols]
@@ -69,33 +69,22 @@ style = "bg:green1 fg:black"
 format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
-
-[directory.substitutions]
-"Documents" = "󰈙 "
-"Downloads" = " "
-"Music" = "󰝚 "
-"Pictures" = " "
-"Developer" = "󰲋 "
+truncate_to_repo = true
+use_os_path_sep = true
 
 [git_branch]
-symbol = ""
 style = "bg:green2"
+symbol = ""
 format = '[[ $symbol $branch ](fg:black bg:green2)]($style)'
 
 [git_status]
 style = "bg:green2"
-conflicted = "🏳"
+ignore_submodules = true
 ahead = "🏎💨"
 behind = "😰"
-diverged = "😵"
 up_to_date = "✓"
-untracked = "🤷"
-stashed = "📦"
-modified = "📝"
-#FIXME: staged = "[++\($count\)](green)"
-renamed = "👅"
-deleted = "🗑"
-format = '[[($all_status$ahead_behind )](fg:black bg:green2)]($style)'
+untracked = ""
+format = '[[($ahead_behind)](fg:black bg:green2)]($style)'
 
 [nodejs]
 symbol = ""

@@ -38,7 +38,7 @@ $(BASH_COLORS): $(COLORS_SRC)
 		print "export COLOR_" toupper($$1) "=\"" $$2 "\"" \
 	}' $(COLORS_SRC) >> $@
 
-$(STARSHIP_CONFIG): $(COLORS_SRC)
+$(STARSHIP_CONFIG): $(COLORS_SRC) $(STARSHIP_BASE)
 	@echo "Generating Starship colors..."
 	@echo "palette = \"onedark_ansii\"\n" > $@
 	@cat $(STARSHIP_BASE) >> $@
