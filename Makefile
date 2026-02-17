@@ -1,7 +1,7 @@
 COLORS_SRC  = colors.toml
 
 # tmux
-TMUX_CONFIG_DIR = /tmux/.config/tmux/
+TMUX_CONFIG_DIR = tmux/.config/tmux
 TMUX_COLORS     = tmux/.config/tmux/colors.tmux.conf
 
 # Starship
@@ -15,7 +15,7 @@ NVIM_COLORS     = $(NVIM_CONFIG_DIR)/lua/custom/generated_colors.lua
 # bash
 BASH_COLORS = bash/.config/bash/bash_color
 
-STOW = vim tmux starship nvim bash
+STOW = vim tmux starship nvim bash git
 
 .PHONY: all stow apply clean install
 
