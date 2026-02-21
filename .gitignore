@@ -1,2 +1,3 @@
 git/.config/git/config
 bash/.config/bash/local_script.sh
+bash/.config/bash/api_keys.sh
