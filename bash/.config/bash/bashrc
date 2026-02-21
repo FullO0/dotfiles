@@ -3,13 +3,13 @@
 
 # If not running interactively, don't do anything
 case $- in
-    *i*) ;;
-      *) return;;
+*i*) ;;
+*) return ;;
 esac
 
 # Local script for machine dependent settings
-touch $HOME/.dotfiles/bash/.config/bash/local_script.sh
-. $HOME/.dotfiles/bash/.config/bash/local_script.sh
+touch "$HOME/.dotfiles/bash/.config/bash/local_script.sh"
+. "$HOME/.dotfiles/bash/.config/bash/local_script.sh"
 
 # XDG Base Directory Specification
 export XDG_CONFIG_HOME="$HOME/.config"
@@ -47,19 +47,19 @@ shopt -s globstar
 
 # set variable identifying the chroot you work in (used in the prompt below)
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
+	debian_chroot=$(cat /etc/debian_chroot)
 fi
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
-    test -r $XDG_CONFIG_HOME/bash/dircolors && eval "$(dircolors -b $XDG_CONFIG_HOME/bash/dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    alias dir='dir --color=auto'
-    alias vdir='vdir --color=auto'
+	test -r $XDG_CONFIG_HOME/bash/dircolors && eval "$(dircolors -b $XDG_CONFIG_HOME/bash/dircolors)" || eval "$(dircolors -b)"
+	alias ls='ls --color=auto'
+	alias dir='dir --color=auto'
+	alias vdir='vdir --color=auto'
 
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
+	alias grep='grep --color=auto'
+	alias fgrep='fgrep --color=auto'
+	alias egrep='egrep --color=auto'
 fi
 
 # colored GCC warnings and errors
@@ -67,7 +67,7 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 
 # Alias definitions.
 if [ -f $XDG_CONFIG_HOME/bash/bash_aliases ]; then
-    . $XDG_CONFIG_HOME/bash/bash_aliases
+	. $XDG_CONFIG_HOME/bash/bash_aliases
 fi
 
 # --- export enviroment variables here ---
@@ -90,7 +90,7 @@ fi
 
 # Background color
 if [[ $TERM != "linux" ]]; then
-    printf "\e]11;%s\a" "$COLOR_BG0"
+	printf "\e]11;%s\a" "$COLOR_BG0"
 fi
 
 # Enable starship
@@ -98,16 +98,15 @@ eval "$(starship init bash)"
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/christian/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+__conda_setup="$('/home/christian/anaconda3/bin/conda' 'shell.bash' 'hook' 2>/dev/null)"
 if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
+	eval "$__conda_setup"
 else
-    if [ -f "/home/christian/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/christian/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/christian/anaconda3/bin:$PATH"
-    fi
+	if [ -f "/home/christian/anaconda3/etc/profile.d/conda.sh" ]; then
+		. "/home/christian/anaconda3/etc/profile.d/conda.sh"
+	else
+		export PATH="/home/christian/anaconda3/bin:$PATH"
+	fi
 fi
 unset __conda_setup
 # <<< conda initialize <<<
-
