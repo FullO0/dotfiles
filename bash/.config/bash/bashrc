@@ -11,6 +11,10 @@ esac
 touch "$HOME/.dotfiles/bash/.config/bash/local_script.sh"
 . "$HOME/.dotfiles/bash/.config/bash/local_script.sh"
 
+# Load API keys
+touch "$HOME/.dotfiles/bash/.config/bash/api_keys.sh"
+. "$HOME/.dotfiles/bash/.config/bash/api_keys.sh"
+
 # XDG Base Directory Specification
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
