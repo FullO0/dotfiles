@@ -13,7 +13,7 @@ NVIM_CONFIG_DIR = nvim/.config/nvim
 NVIM_COLORS     = $(NVIM_CONFIG_DIR)/lua/custom/generated_colors.lua
 
 # bash
-BASH_COLORS = bash/.config/bash/bash_color
+BASH_COLORS = bash/.config/bash/bash_color.sh
 
 STOW = vim tmux starship nvim bash git
 

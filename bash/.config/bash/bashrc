@@ -70,8 +70,8 @@ fi
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # Alias definitions.
-if [ -f $XDG_CONFIG_HOME/bash/bash_aliases ]; then
-	. $XDG_CONFIG_HOME/bash/bash_aliases
+if [ -f $XDG_CONFIG_HOME/bash/bash_aliases.sh ]; then
+	. $XDG_CONFIG_HOME/bash/bash_aliases.sh
 fi
 
 # --- export enviroment variables here ---
@@ -88,8 +88,8 @@ export PATH="$PATH:$JASMIN_JAR"
 export PATH="$PATH:$HOME/.local/bin"
 
 # Load Color enviroment variables
-if [ -f $XDG_CONFIG_HOME/bash/bash_color ]; then
-	. $XDG_CONFIG_HOME/bash/bash_color
+if [ -f $XDG_CONFIG_HOME/bash/bash_colors.sh ]; then
+	. $XDG_CONFIG_HOME/bash/bash_color.sh
 fi
 
 # Background color
