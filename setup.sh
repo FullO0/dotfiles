@@ -31,17 +31,17 @@ NODE_VERSION="v22.14.0" # for my nvim copilot.lua
 install_stow() {
 	echo "Installing GNU Stow (Static Script)..."
 
-	rm -rf "$LOCAL_SHARE/stow-${STOW_VERSION}"
+	rm -rf "$XDG_DATA_HOME/stow-${STOW_VERSION}"
 
 	# Download tarball
-	cd "$LOCAL_SHARE" || exit
+	cd "$XDG_DATA_HOME" || exit
 	curl -LO "https://ftp.gnu.org/gnu/stow/stow-${STOW_VERSION}.tar.gz"
 	tar -xzf "stow-${STOW_VERSION}.tar.gz"
 	rm "stow-${STOW_VERSION}.tar.gz"
 
 	# Symlink the binary directly (Stow is just a Perl script, no compile needed)
 	# We must link it so it finds its own library modules relative to the symlink
-	ln -sf "$LOCAL_SHARE/stow-${STOW_VERSION}/bin/stow" "$LOCAL_BIN/stow"
+	ln -sf "$XDG_DATA_HOME/stow-${STOW_VERSION}/bin/stow" "$LOCAL_BIN/stow"
 
 	echo "GNU Stow installed"
 }
@@ -60,10 +60,10 @@ install_tmux() {
 	echo "Installing Tmux (Static AppImage)..."
 	# We use the AppImage but extract it to avoid FUSE requirement on Uni computers
 
-	rm -rf "$LOCAL_SHARE/tmux"
+	rm -rf "$XDG_DATA_HOME/tmux"
 
-	mkdir -p "$LOCAL_SHARE/tmux"
-	cd "$LOCAL_SHARE/tmux" || exit
+	mkdir -p "$XDG_DATA_HOME/tmux"
+	cd "$XDG_DATA_HOME/tmux" || exit
 
 	# Download AppImage
 	curl -LO "https://github.com/nelsonenzo/tmux-appimage/releases/download/${TMUX_VERSION}/tmux.appimage"
@@ -73,7 +73,7 @@ install_tmux() {
 	./tmux.appimage --appimage-extract >/dev/null
 
 	# Link the internal binary
-	ln -sf "$LOCAL_SHARE/tmux/squashfs-root/AppRun" "$LOCAL_BIN/tmux"
+	ln -sf "$XDG_DATA_HOME/tmux/squashfs-root/AppRun" "$LOCAL_BIN/tmux"
 
 	# Cleanup
 	rm tmux.appimage
@@ -84,9 +84,9 @@ install_tmux() {
 install_nvim() {
 	echo "Installing Neovim (Binary Release)..."
 
-	rm -rf "$LOCAL_SHARE/nvim-linux64"
+	rm -rf "$XDG_DATA_HOME/nvim-linux64"
 
-	cd "$LOCAL_SHARE" || exit
+	cd "$XDG_DATA_HOME" || exit
 
 	# Download Linux64 Tarball (Contains binary + runtime)
 	curl -LO "https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/nvim-linux64.tar.gz"
@@ -96,7 +96,7 @@ install_nvim() {
 	rm nvim-linux64.tar.gz
 
 	# Symlink the binary
-	ln -sf "$LOCAL_SHARE/nvim-linux64/bin/nvim" "$LOCAL_BIN/nvim"
+	ln -sf "$XDG_DATA_HOME/nvim-linux64/bin/nvim" "$LOCAL_BIN/nvim"
 
 	echo "Neovim installed"
 }
@@ -132,35 +132,42 @@ install_fd_find() {
 }
 
 install_node() {
-	echo "Installing Node.js (LTS)..."
-	NODE_DIST="node-${NODE_VERSION}-linux-x64"
+	echo "Installing Node.js ${NODE_VERSION}..."
 
-	# 1. Clean up old install
-	rm -rf "$LOCAL_SHARE/node-linux-x64"
+	# Define the final destination
+	local NODE_DIR="$XDG_DATA_HOME/node-linux-x64"
+	local DIST_NAME="node-${NODE_VERSION}-linux-x64"
 
-	# 2. Download and Extract
-	# Note: Node uses .tar.xz, which requires the 'J' flag or auto-detection
-	cd "$LOCAL_SHARE" || exit
-	curl -LO "https://nodejs.org/dist/${NODE_VERSION}/${NODE_DIST}.tar.xz"
+	# 1. Clean up old install (Force remove)
+	rm -rf "$NODE_DIR"
 
-	echo "   (Extracting... this might take a moment)"
-	tar -xf "${NODE_DIST}.tar.xz"
-	rm "${NODE_DIST}.tar.xz"
+	# 2. Create a Temp Directory for download/extraction
+	local TEMP_DIR=$(mktemp -d)
 
-	# Rename to a generic folder so we don't have to update symlinks constantly
-	mv "${NODE_DIST}" "$LOCAL_SHARE/node-linux-x64"
+	echo "   Downloading to temp..."
+	# Download tar.xz to temp
+	curl -L "https://nodejs.org/dist/${NODE_VERSION}/${DIST_NAME}.tar.xz" -o "$TEMP_DIR/node.tar.xz"
 
-	# 3. Symlink binaries
-	# We link individually so we don't pollute PATH with other junk
-	ln -sf "$LOCAL_SHARE/node-linux-x64/bin/node" "$LOCAL_BIN/node"
-	ln -sf "$LOCAL_SHARE/node-linux-x64/bin/npm" "$LOCAL_BIN/npm"
-	ln -sf "$LOCAL_SHARE/node-linux-x64/bin/npx" "$LOCAL_BIN/npx"
-	ln -sf "$LOCAL_SHARE/node-linux-x64/bin/corepack" "$LOCAL_BIN/corepack"
+	echo "   Extracting..."
+	# Extract inside temp
+	tar -xf "$TEMP_DIR/node.tar.xz" -C "$TEMP_DIR"
 
-	echo "Node.js ${NODE_VERSION} installed"
+	echo "   Moving to $XDG_DATA_HOME..."
+	# 3. Move the extracted folder to the final location
+	# We move "$TEMP_DIR/node-v22..." to "$XDG_DATA_HOME/node-linux-x64"
+	mv "$TEMP_DIR/$DIST_NAME" "$NODE_DIR"
+
+	# 4. Create Symlinks
+	ln -sf "$NODE_DIR/bin/node" "$LOCAL_BIN/node"
+	ln -sf "$NODE_DIR/bin/npm" "$LOCAL_BIN/npm"
+	ln -sf "$NODE_DIR/bin/npx" "$LOCAL_BIN/npx"
+
+	# 5. Cleanup
+	rm -rf "$TEMP_DIR"
+
+	echo "Node.js installed to $NODE_DIR"
 }
 # --- TOOLS DETECTION ---
-#
 # Returns 0 (true) if current_ver < target_ver
 is_version_older() {
 	local current=$1
