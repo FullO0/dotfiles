@@ -24,6 +24,7 @@ STOW_VERSION="2.4.1"
 TMUX_VERSION="3.3a" # Reliable version
 RG_VERSION="15.1.0"
 NVIM_VERSION="v0.11.5"
+NODE_VERSION="v22.14.0" # for my nvim copilot.lua
 
 # Function to install GNU Stow
 install_stow() {
@@ -127,6 +128,35 @@ install_fd_find() {
 	rm "fd-v${FD_VERSION}-${ARCH}.tar.gz"
 
 	echo "fd_find installed"
+}
+
+install_node() {
+	echo "Installing Node.js (LTS)..."
+	NODE_DIST="node-${NODE_VERSION}-linux-x64"
+
+	# 1. Clean up old install
+	rm -rf "$LOCAL_SHARE/node-linux-x64"
+
+	# 2. Download and Extract
+	# Note: Node uses .tar.xz, which requires the 'J' flag or auto-detection
+	cd "$LOCAL_SHARE" || exit
+	curl -LO "https://nodejs.org/dist/${NODE_VERSION}/${NODE_DIST}.tar.xz"
+
+	echo "   (Extracting... this might take a moment)"
+	tar -xf "${NODE_DIST}.tar.xz"
+	rm "${NODE_DIST}.tar.xz"
+
+	# Rename to a generic folder so we don't have to update symlinks constantly
+	mv "${NODE_DIST}" "node-linux-x64"
+
+	# 3. Symlink binaries
+	# We link individually so we don't pollute PATH with other junk
+	ln -sf "$LOCAL_SHARE/node-linux-x64/bin/node" "$LOCAL_BIN/node"
+	ln -sf "$LOCAL_SHARE/node-linux-x64/bin/npm" "$LOCAL_BIN/npm"
+	ln -sf "$LOCAL_SHARE/node-linux-x64/bin/npx" "$LOCAL_BIN/npx"
+	ln -sf "$LOCAL_SHARE/node-linux-x64/bin/corepack" "$LOCAL_BIN/corepack"
+
+	echo "Node.js ${NODE_VERSION} installed"
 }
 # --- TOOLS ---
 
