@@ -161,7 +161,7 @@ install_node() {
 # --- TOOLS ---
 
 # Check for dependencies
-tools=("stow" "starship" "tmux" "nvim" "fd_find" "ripgrep")
+tools=("stow" "starship" "tmux" "nvim" "fd" "rg")
 for tool in "${tools[@]}"; do
 	if ! command -v "$tool" &>/dev/null; then
 		echo "⚠️ $tool not found."
@@ -173,9 +173,9 @@ for tool in "${tools[@]}"; do
 			install_tmux
 		elif [ "$tool" == "nvim" ]; then
 			install_nvim
-		elif [ "$tool" == "fd_find" ]; then
+		elif [ "$tool" == "fd" ]; then
 			install_fd_find
-		elif [ "$tool" == "ripgrep" ]; then
+		elif [ "$tool" == "rg" ]; then
 			install_ripgrep
 		fi
 	else
