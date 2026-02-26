@@ -23,6 +23,7 @@ mkdir -p "$LOCAL_BIN"
 STOW_VERSION="2.4.1"
 TMUX_VERSION="3.3a" # Reliable version
 RG_VERSION="15.1.0"
+FD_VERSION="10.3.0"
 NVIM_VERSION="v0.11.5"
 NODE_VERSION="v22.14.0" # for my nvim copilot.lua
 
@@ -147,7 +148,7 @@ install_node() {
 	rm "${NODE_DIST}.tar.xz"
 
 	# Rename to a generic folder so we don't have to update symlinks constantly
-	mv "${NODE_DIST}" "node-linux-x64"
+	mv "${NODE_DIST}" "$LOCAL_SHARE/node-linux-x64"
 
 	# 3. Symlink binaries
 	# We link individually so we don't pollute PATH with other junk
@@ -158,27 +159,100 @@ install_node() {
 
 	echo "Node.js ${NODE_VERSION} installed"
 }
-# --- TOOLS ---
+# --- TOOLS DETECTION ---
+#
+# Returns 0 (true) if current_ver < target_ver
+is_version_older() {
+	local current=$1
+	local target=$2
 
-# Check for dependencies
-tools=("stow" "starship" "tmux" "nvim" "fd" "rg")
-for tool in "${tools[@]}"; do
-	if ! command -v "$tool" &>/dev/null; then
-		echo "⚠️ $tool not found."
-		if [ "$tool" == "stow" ]; then
-			install_stow
-		elif [ "$tool" == "starship" ]; then
-			install_starship
-		elif [ "$tool" == "tmux" ]; then
-			install_tmux
-		elif [ "$tool" == "nvim" ]; then
-			install_nvim
-		elif [ "$tool" == "fd" ]; then
-			install_fd_find
-		elif [ "$tool" == "rg" ]; then
-			install_ripgrep
-		fi
+	# If versions are equal, we don't need to update
+	if [ "$current" == "$target" ]; then return 1; fi
+
+	# sort -V sorts version numbers.
+	# We list 'current' and 'target'. If 'current' is the first item
+	# in the sorted list, it means it is the smaller (older) one.
+	local lowest=$(printf '%s\n%s' "$current" "$target" | sort -V | head -n1)
+
+	if [ "$lowest" == "$current" ]; then
+		return 0 # True: Current is older
 	else
-		echo "✓ $tool is already installed."
+		return 1 # False: Current is newer or same
+	fi
+}
+
+echo "Checking tools..."
+tools=("stow" "starship" "tmux" "nvim" "fd" "rg" "node")
+for tool in "${tools[@]}"; do
+	NEEDS_INSTALL=false
+
+	# 1. Check if the tool exists at all
+	if ! command -v "$tool" &>/dev/null; then
+		echo "⚠️  $tool not found. Marking for install."
+		NEEDS_INSTALL=true
+	else
+		# 2. Tool exists, check version
+		CURRENT_VER=""
+		TARGET_VER=""
+
+		case "$tool" in
+		node)
+			# Node output: "v22.14.0" -> We keep the 'v' because TARGET has it
+			CURRENT_VER=$(node -v)
+			TARGET_VER="$NODE_VERSION"
+			;;
+		nvim)
+			# Nvim output: "NVIM v0.11.5" -> Extract "v0.11.5"
+			CURRENT_VER=$(nvim --version | head -n1 | grep -o "v[0-9].*")
+			TARGET_VER="$NVIM_VERSION"
+			;;
+		tmux)
+			# Tmux output: "tmux 3.3a" -> Extract "3.3a"
+			CURRENT_VER=$(tmux -V | awk '{print $2}')
+			TARGET_VER="$TMUX_VERSION"
+			;;
+		stow)
+			# Stow output: "stow (GNU Stow) 2.3.1" -> Extract "2.3.1"
+			CURRENT_VER=$(stow --version | awk '{print $NF}')
+			TARGET_VER="$STOW_VERSION"
+			;;
+		rg)
+			# rg output: "ripgrep 15.1.0" -> Extract "15.1.0"
+			CURRENT_VER=$(rg --version | head -n1 | awk '{print $2}')
+			TARGET_VER="$RG_VERSION"
+			;;
+		fd)
+			# fd output: "fd 10.3.0" -> Extract "10.3.0"
+			CURRENT_VER=$(fd --version | awk '{print $2}')
+			TARGET_VER="$FD_VERSION"
+			;;
+		*)
+			# Fallback for simple tools (starship)
+			CURRENT_VER="unknown"
+			;;
+		esac
+
+		# 3. Compare Logic
+		if [ "$CURRENT_VER" != "unknown" ]; then
+			if is_version_older "$CURRENT_VER" "$TARGET_VER"; then
+				echo "⚠️  $tool is old ($CURRENT_VER < $TARGET_VER). Updating..."
+				NEEDS_INSTALL=true
+			else
+				echo "✓ $tool is up to date ($CURRENT_VER)."
+			fi
+		fi
+	fi
+
+	# 4. Execute Install if needed
+	if [ "$NEEDS_INSTALL" = true ]; then
+		case "$tool" in
+		stow) install_stow ;;
+		starship) install_starship ;;
+		tmux) install_tmux ;;
+		nvim) install_nvim ;;
+		fd) install_fd_find ;;
+		rg) install_ripgrep ;;
+		node) install_node ;;
+		esac
 	fi
 done
