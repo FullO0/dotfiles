@@ -20,7 +20,7 @@ LOCAL_BIN="$HOME/.local/bin"
 mkdir -p "$LOCAL_BIN"
 
 # --- Function to Install Tools ---
-STOW_VERSION="2.4.1"
+STOW_VERSION="2.3.1"
 TMUX_VERSION="3.3a" # Reliable version
 RG_VERSION="15.1.0"
 FD_VERSION="10.3.0"
@@ -33,14 +33,14 @@ install_stow() {
 
 	rm -rf "$XDG_DATA_HOME/stow-${STOW_VERSION}"
 
-	# Download tarball
+	OLDPWD=$(pwd)
 	cd "$XDG_DATA_HOME" || exit
 	curl -LO "https://ftp.gnu.org/gnu/stow/stow-${STOW_VERSION}.tar.gz"
 	tar -xzf "stow-${STOW_VERSION}.tar.gz"
 	rm "stow-${STOW_VERSION}.tar.gz"
+	cd "$OLDPWD"
 
-	# Symlink the binary directly (Stow is just a Perl script, no compile needed)
-	# We must link it so it finds its own library modules relative to the symlink
+	# Symlink the binary so it finds its own library modules relative to the symlink
 	ln -sf "$XDG_DATA_HOME/stow-${STOW_VERSION}/bin/stow" "$LOCAL_BIN/stow"
 
 	echo "GNU Stow installed"
@@ -58,11 +58,9 @@ install_starship() {
 # Function to install tmux
 install_tmux() {
 	echo "Installing Tmux (Static AppImage)..."
-	# We use the AppImage but extract it to avoid FUSE requirement on Uni computers
-
 	rm -rf "$XDG_DATA_HOME/tmux"
-
 	mkdir -p "$XDG_DATA_HOME/tmux"
+	OLDPWD=$(pwd)
 	cd "$XDG_DATA_HOME/tmux" || exit
 
 	# Download AppImage
@@ -72,20 +70,22 @@ install_tmux() {
 	# Extract it (Bypasses FUSE requirement)
 	./tmux.appimage --appimage-extract >/dev/null
 
-	# Link the internal binary
-	ln -sf "$XDG_DATA_HOME/tmux/squashfs-root/AppRun" "$LOCAL_BIN/tmux"
+	# Copy the binary to LOCAL_BIN
+	cp "squashfs-root/AppRun" "$LOCAL_BIN/tmux"
+	chmod +x "$LOCAL_BIN/tmux"
 
 	# Cleanup
 	rm tmux.appimage
+	cd "$OLDPWD"
+	rm -rf "$XDG_DATA_HOME/tmux"
 
-	echo "Tmux installed (Extracted AppImage)"
+	echo "Tmux installed (Extracted AppImage and cleaned up)"
 }
 
 install_nvim() {
 	echo "Installing Neovim (Binary Release)..."
-
 	rm -rf "$XDG_DATA_HOME/nvim-linux64"
-
+	OLDPWD=$(pwd)
 	cd "$XDG_DATA_HOME" || exit
 
 	# Download Linux64 Tarball (Contains binary + runtime)
@@ -95,10 +95,15 @@ install_nvim() {
 	tar -xzf nvim-linux64.tar.gz
 	rm nvim-linux64.tar.gz
 
-	# Symlink the binary
-	ln -sf "$XDG_DATA_HOME/nvim-linux64/bin/nvim" "$LOCAL_BIN/nvim"
+	# Copy the binary to LOCAL_BIN
+	cp "nvim-linux64/bin/nvim" "$LOCAL_BIN/nvim"
+	chmod +x "$LOCAL_BIN/nvim"
 
-	echo "Neovim installed"
+	# Cleanup extracted data
+	rm -rf "$XDG_DATA_HOME/nvim-linux64"
+	cd "$OLDPWD"
+
+	echo "Neovim installed (binary copied and data cleaned up)"
 }
 
 # Function to install live-grep
@@ -107,13 +112,16 @@ install_ripgrep() {
 
 	# Download ripgrep
 	curl -LO "https://github.com/BurntSushi/ripgrep/releases/download/${RG_VERSION}/ripgrep-${RG_VERSION}-${ARCH}.tar.gz"
-	# Extract specific binary to stdout and write to destination
-	tar -xzf "ripgrep-${RG_VERSION}-${ARCH}.tar.gz" --strip-components=1 -C "$HOME/.local/bin" "ripgrep-${RG_VERSION}-${ARCH}/rg"
-	chmod +x "$HOME/.local/bin/rg"
+	# Extract specific binary to LOCAL_BIN
+	mkdir -p "$XDG_DATA_HOME/rg-tmp"
+	tar -xzf "ripgrep-${RG_VERSION}-${ARCH}.tar.gz" --strip-components=1 -C "$XDG_DATA_HOME/rg-tmp" "ripgrep-${RG_VERSION}-${ARCH}/rg"
+	cp "$XDG_DATA_HOME/rg-tmp/rg" "$LOCAL_BIN/rg"
+	chmod +x "$LOCAL_BIN/rg"
 	# Cleanup
 	rm "ripgrep-${RG_VERSION}-${ARCH}.tar.gz"
+	rm -rf "$XDG_DATA_HOME/rg-tmp"
 
-	echo "ripgrep installed"
+	echo "ripgrep installed (binary copied and data cleaned up)"
 }
 
 install_fd_find() {
@@ -122,13 +130,16 @@ install_fd_find() {
 	FD_VERSION="10.3.0"
 	# Download fd
 	curl -LO "https://github.com/sharkdp/fd/releases/download/v${FD_VERSION}/fd-v${FD_VERSION}-${ARCH}.tar.gz"
-	# Extract specific binary
-	tar -xzf "fd-v${FD_VERSION}-${ARCH}.tar.gz" --strip-components=1 -C "$HOME/.local/bin" "fd-v${FD_VERSION}-${ARCH}/fd"
-	chmod +x "$HOME/.local/bin/fd"
+	# Extract specific binary to temp dir
+	mkdir -p "$XDG_DATA_HOME/fd-tmp"
+	tar -xzf "fd-v${FD_VERSION}-${ARCH}.tar.gz" --strip-components=1 -C "$XDG_DATA_HOME/fd-tmp" "fd-v${FD_VERSION}-${ARCH}/fd"
+	cp "$XDG_DATA_HOME/fd-tmp/fd" "$LOCAL_BIN/fd"
+	chmod +x "$LOCAL_BIN/fd"
 	# Cleanup
 	rm "fd-v${FD_VERSION}-${ARCH}.tar.gz"
+	rm -rf "$XDG_DATA_HOME/fd-tmp"
 
-	echo "fd_find installed"
+	echo "fd_find installed (binary copied and data cleaned up)"
 }
 
 install_node() {
