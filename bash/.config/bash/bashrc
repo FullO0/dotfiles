@@ -85,7 +85,9 @@ export GIT_CONFIG_GLOBAL="$XDG_CONFIG_HOME/git/config"
 # Add PATH variables
 export PATH="$PATH:$JAVA_HOME/bin"
 export PATH="$PATH:$JASMIN_JAR"
-export PATH="$PATH:$HOME/.local/bin"
+
+# add .local/bin with highest priority
+export PATH="$HOME/.local/bin:$PATH"
 
 # Load Color enviroment variables
 if [ -f "$XDG_CONFIG_HOME/bash/bash_color.sh" ]; then
