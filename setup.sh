@@ -32,17 +32,22 @@ TREE_SITTER_VERSION="0.26.6"
 install_stow() {
 	echo "Installing GNU Stow (Static Script)..."
 
-	rm -rf "$XDG_DATA_HOME/stow-${STOW_VERSION}"
-
-	OLDPWD=$(pwd)
-	cd "$XDG_DATA_HOME" || exit
+	# Work out of the /tmp directory to keep things clean
+	cd /tmp || exit
 	curl -LO "https://ftp.gnu.org/gnu/stow/stow-${STOW_VERSION}.tar.gz"
 	tar -xzf "stow-${STOW_VERSION}.tar.gz"
-	rm "stow-${STOW_VERSION}.tar.gz"
-	cd "$OLDPWD" || exit
+	cd "stow-${STOW_VERSION}" || exit
 
-	# Symlink the binary so it finds its own library modules relative to the symlink
-	ln -sf "$XDG_DATA_HOME/stow-${STOW_VERSION}/bin/stow" "$LOCAL_BIN/stow"
+	# Configure the build to install inside your ~/.local directory instead of /usr/local
+	./configure --prefix="$HOME/.local"
+
+	# Build and install
+	make
+	make install
+
+	# Clean up the downloaded files
+	cd /tmp || exit
+	rm -rf "stow-${STOW_VERSION}" "stow-${STOW_VERSION}.tar.gz"
 
 	echo "GNU Stow installed"
 }
