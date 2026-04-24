@@ -26,22 +26,28 @@ RG_VERSION="15.1.0"
 FD_VERSION="10.3.0"
 NVIM_VERSION="v0.11.5"
 NODE_VERSION="v22.14.0" # for my nvim copilot.lua
+TREE_SITTER_VERSION="0.26.6"
 
 # Function to install GNU Stow
 install_stow() {
 	echo "Installing GNU Stow (Static Script)..."
 
-	rm -rf "$XDG_DATA_HOME/stow-${STOW_VERSION}"
-
-	OLDPWD=$(pwd)
-	cd "$XDG_DATA_HOME" || exit
+	# Work out of the /tmp directory to keep things clean
+	cd /tmp || exit
 	curl -LO "https://ftp.gnu.org/gnu/stow/stow-${STOW_VERSION}.tar.gz"
 	tar -xzf "stow-${STOW_VERSION}.tar.gz"
-	rm "stow-${STOW_VERSION}.tar.gz"
-	cd "$OLDPWD"
+	cd "stow-${STOW_VERSION}" || exit
 
-	# Symlink the binary so it finds its own library modules relative to the symlink
-	ln -sf "$XDG_DATA_HOME/stow-${STOW_VERSION}/bin/stow" "$LOCAL_BIN/stow"
+	# Configure the build to install inside your ~/.local directory instead of /usr/local
+	./configure --prefix="$HOME/.local"
+
+	# Build and install
+	make
+	make install
+
+	# Clean up the downloaded files
+	cd /tmp || exit
+	rm -rf "stow-${STOW_VERSION}" "stow-${STOW_VERSION}.tar.gz"
 
 	echo "GNU Stow installed"
 }
@@ -178,6 +184,22 @@ install_node() {
 
 	echo "Node.js installed to $NODE_DIR"
 }
+
+install_tree_sitter() {
+	echo "Installing tree-sitter ${TREE_SITTER_VERSION}..."
+
+	# Download gz to local bin
+	curl -L "https://github.com/tree-sitter/tree-sitter/releases/download/v${TREE_SITTER_VERSION}/tree-sitter-linux-x64.gz" -o "$LOCAL_BIN/tree-sitter.gz"
+
+	# extract in local bin
+	gunzip -f "$LOCAL_BIN/tree-sitter.gz"
+
+	# Make executable
+	chmod +x "$LOCAL_BIN/tree-sitter"
+
+	echo "tree-sitter Installed"
+}
+
 # --- TOOLS DETECTION ---
 # Returns 0 (true) if current_ver < target_ver
 is_version_older() {
@@ -200,7 +222,7 @@ is_version_older() {
 }
 
 echo "Checking tools..."
-tools=("stow" "starship" "tmux" "nvim" "fd" "rg" "node")
+tools=("stow" "starship" "tmux" "nvim" "fd" "rg" "node" "tree-sitter")
 for tool in "${tools[@]}"; do
 	NEEDS_INSTALL=false
 
@@ -244,6 +266,11 @@ for tool in "${tools[@]}"; do
 			CURRENT_VER=$(fd --version | awk '{print $2}')
 			TARGET_VER="$FD_VERSION"
 			;;
+		tree-sitter)
+			# tree-sitter output: "tree-sitter 0.26.6" -> Extract "0.26.6"
+			CURRENT_VER=$(tree-sitter --version | awk '{print $2}')
+			TARGET_VER="$TREE_SITTER_VERSION"
+			;;
 		*)
 			# Fallback for simple tools (starship)
 			CURRENT_VER="unknown"
@@ -271,6 +298,7 @@ for tool in "${tools[@]}"; do
 		fd) install_fd_find ;;
 		rg) install_ripgrep ;;
 		node) install_node ;;
+		tree-sitter) install_tree_sitter ;;
 		esac
 	fi
 done
