@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# TODO: Create a installation for curl
+# TODO: Create a installlation for make
+# TODO: Create a installation for a C compiler
+# TODO: Create a installation for clang, clangd, clang-tidy
+# TODO: Create a installation for python3 and python3-pip
+# TODO: Create a isntallation for FiraCode Mono Nerd font
+# TODO: Create a installation for rclone
+
+# Download Submodule repos in the .dotfiles
+
+#Source current .bashrc in .dotfiles/bash/.bashrc
+source ./bash/.bashrc
+
 #Assign XDG standard directories if they don't exist
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
@@ -20,11 +33,11 @@ LOCAL_BIN="$HOME/.local/bin"
 mkdir -p "$LOCAL_BIN"
 
 # --- Function to Install Tools ---
-STOW_VERSION="2.3.1"
-TMUX_VERSION="3.3a" # Reliable version
+STOW_VERSION="2.3.1" #FIXME:
+TMUX_VERSION="3.3a"  # Reliable version FIXME:
 RG_VERSION="15.1.0"
 FD_VERSION="10.3.0"
-NVIM_VERSION="v0.11.5"
+NVIM_VERSION="v0.11.5"  #FIXME:
 NODE_VERSION="v22.14.0" # for my nvim copilot.lua
 TREE_SITTER_VERSION="0.26.6"
 
