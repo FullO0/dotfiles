@@ -24,6 +24,20 @@ set directory=~/.local/state/vim/swap//
 set undodir=~/.local/state/vim/undo//
 set viminfofile=~/.local/state/vim/viminfo
 
+"" --- Mappings --- ""
+" a to A remap
+nnoremap a A
+nnoremap A a
+vnoremap a A
+vnoremap A a
+
+" Backspace
+set backspace=indent,eol,start
+
+"" --- Color --- ""
+colorscheme industry
+syntax on
+
 "" --- Settings --- ""
 " backups
 set undofile
@@ -32,9 +46,7 @@ set nowritebackup
 
 " Interface
 set relativenumber
-set cursorline
-set ruler
-set scrolloff=8
+set scrolloff=15
 set mouse=a
 
 " Indentation
