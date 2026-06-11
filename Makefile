@@ -15,11 +15,11 @@ NVIM_COLORS     = $(NVIM_CONFIG_DIR)/lua/custom/generated_colors.lua
 # bash
 BASH_COLORS = bash/.config/bash/bash_color.sh
 
-STOW = vim tmux starship nvim bash git
+STOW = vim tmux starship nvim bash git hypr waybar fuzzel alacritty
 
-.PHONY: all stow apply clean install
+.PHONY: all stowall apply clean install
 
-all: install apply stow
+all: install apply stowall
 
 # Creates all needed paths for all configs to work
 install: setup.sh
@@ -70,5 +70,6 @@ $(NVIM_COLORS): $(COLORS_SRC)
 	@echo "}" >> $@
 
 # stows everything
-stow:
+stowall:
 	stow -R $(foreach dir, $(STOW), $(dir))
+	#TODO: Special symlinking / copying for sddm config files living in /etc and /usr

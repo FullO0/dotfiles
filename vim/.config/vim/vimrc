@@ -25,6 +25,8 @@ set undodir=~/.local/state/vim/undo//
 set viminfofile=~/.local/state/vim/viminfo
 
 "" --- Mappings --- ""
+let mapleader = " "
+
 " a to A remap
 nnoremap a A
 nnoremap A a
@@ -33,6 +35,16 @@ vnoremap A a
 
 " Backspace
 set backspace=indent,eol,start
+
+" Force Vim unamed register to be wl-copy, if it exists
+set clipboard=unnamedplus
+if executable ('wl-copy') && executable('wl-paste')
+	autocmd TextYankPost * call system('wl-copy --type text/plain', getreg('"'))
+
+	nnoremap p: let @" = system('wlpaste --no-newline')<CR>p
+	nnoremap P: let @" = system('wlpaste --no-newline')<CR>P
+endif
+
 
 "" --- Color --- ""
 colorscheme industry

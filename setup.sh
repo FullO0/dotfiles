@@ -10,6 +10,9 @@
 
 # Download Submodule repos in the .dotfiles
 
+# Stow all current files
+make stow
+
 #Source current .bashrc in .dotfiles/bash/.bashrc
 source ./bash/.bashrc
 

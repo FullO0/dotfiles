@@ -1,0 +1,9 @@
+tmux
+neovim
+starship
+stow
+ripgrep
+fd
+tree-sitter
+fnm
+
