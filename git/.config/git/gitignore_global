@@ -1,6 +1,7 @@
 # My Personal Ignores
 build
 bin
+node_modules
 
 #########
 ### C ###

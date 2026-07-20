@@ -13,6 +13,7 @@
 	recurse = true
 
 [alias]
+	a = add
 	st = status
 	co = checkout
 	br = branch
