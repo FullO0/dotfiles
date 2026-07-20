@@ -1,49 +1,54 @@
 {
-    // Place the bar at the top of the screen
+    // Layering setup
     "layer": "top",
     "position": "top",
-    "height": 30,
-    "spacing": 4,
+    "margin-top": 8,
+    "margin-left": 12,
+    "margin-right": 12,
 
-    // Choose which modules go Left, Center, and Right
-    "modules-left": ["hyprland/workspaces", "hyprland/submap"],
-    "modules-center": ["hyprland/window"],
-    "modules-right": ["pulseaudio", "network", "cpu", "memory", "clock", "tray"],
+    // Block Group Positioning
+    "modules-left": ["hyprland/workspaces"],
+    "modules-center": ["custom/media"],
+    "modules-right": ["cpu", "memory", "network", "clock"],
 
-    // Configure specific module behaviors
+    // =====================================================================
+    // CORE MODULE DEFINTIONS
+    // =====================================================================
     "hyprland/workspaces": {
-        "disable-scroll": true,
-        "all-outputs": true,
-        "active-only": false,
+        "format": "{name}",
         "on-click": "activate"
     },
-    
+
     "clock": {
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format-alt": "{:%Y-%m-%d}"
+        "format": " {:%H:%M}",
+        "format-alt": " {:%A, %B %d, %Y}",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>"
     },
 
     "cpu": {
-        "format": "  {usage}%",
-        "tooltip": false
+        "interval": 2,
+        "format": " {usage}%"
     },
 
     "memory": {
-        "format": "  {}%"
+        "interval": 2,
+        "format": " {percentage}%",
+        "tooltip-format": "Used: {used:0.1f}G / Total: {total:0.1f}G"
     },
 
     "network": {
-        "format-wifi": "   {essid}",
-        "format-ethernet": "󰈀  eth",
-        "format-disconnected": "⚠  Disconnected"
+        "interface": "wlan0", 
+        "format-wifi": " {essid}",
+        "format-ethernet": "🖧 {ifname}",
+        "format-disconnected": "⚠ Disconnected"
     },
 
-    "pulseaudio": {
-        "format": "{icon}  {volume}%",
-        "format-muted": "󰝟  Muted",
-        "format-icons": {
-            "default": ["", "", ""]
-        },
-        "on-click": "pavucontrol"
+    "custom/media": {
+        "format": "󰎆 {}",
+        "escape": true,
+        "return-type": "json",
+        "max-length": 40,
+        "exec": "playerctl -a metadata --format '{\"text\": \"{{artist}} - {{title}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' --follow",
+        "on-click": "playerctl play-pause"
     }
 }

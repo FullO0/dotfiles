@@ -1,0 +1,54 @@
+/* ~/.config/waybar/style.css */
+
+/* 1. Inject the dynamic colors layer safely */
+@import url("./colors.css");
+
+/* =====================================================================
+ * WAYBAR BASE THEME
+ * ===================================================================== */
+window#waybar {
+    background-color: transparent;
+    color: @text-main; /* Dynamic variable */
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+/* Individual Module Block Styling */
+#workspaces,
+#custom-media,
+#cpu,
+#memory,
+#network,
+#clock {
+    background-color: @theme-bg; /* Dynamic variable */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 2px 12px;
+    margin: 0 4px;
+}
+
+/* Active Workspace Dot Highlight */
+#workspaces button.active {
+    color: @accent-lavender; /* Dynamic variable */
+    border-bottom: 2px solid @accent-lavender;
+}
+
+#workspaces button.urgent {
+    background-color: @status-critical; /* Dynamic variable */
+    color: @theme-bg-solid;
+}
+
+/* Highlight Critical System Usage Metrics */
+#cpu.warning, #memory.warning {
+    color: @status-warning;
+}
+
+#cpu.critical, #memory.critical {
+    color: @status-critical;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}

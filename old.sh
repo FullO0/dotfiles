@@ -424,18 +424,6 @@ install_uv() {
 }
 
 # --- TOOLS DETECTION ---
-# Pulls the first version-shaped token (optionally v-prefixed, optionally
-# with a trailing single letter like tmux's "3.5a") out of whatever text is
-# piped in. Unlike `awk '{print $N}'`, this doesn't care which word the
-# version number shows up as or how many words come before it -- so it
-# survives a distro renaming/reordering its --version banner, e.g.
-# "Ubuntu clang version 20.1.8", "Debian clang version 20.1.8",
-# "Apple clang version 15.0.0", and plain upstream "clang version 20.1.8"
-# all resolve the same way.
-extract_version() {
-	grep -oE 'v?[0-9]+(\.[0-9]+){1,3}[a-z]?' | head -n1
-}
-
 # Returns 0 (true) if current_ver < target_ver
 is_version_older() {
 	local current=$1
@@ -445,6 +433,8 @@ is_version_older() {
 	if [ "$current" == "$target" ]; then return 1; fi
 
 	# sort -V sorts version numbers.
+	# We list 'current' and 'target'. If 'current' is the first item
+	# in the sorted list, it means it is the smaller (older) one.
 	local lowest=$(printf '%s\n%s' "$current" "$target" | sort -V | head -n1)
 
 	if [ "$lowest" == "$current" ]; then
@@ -479,79 +469,75 @@ for tool in "${tools[@]}"; do
 
 		case "$tool" in
 		node)
-			# Node output: "v22.14.0"
-			CURRENT_VER=$(node -v | extract_version)
+			# Node output: "v22.14.0" -> We keep the 'v' because TARGET has it
+			CURRENT_VER=$(node -v)
 			TARGET_VER="$NODE_VERSION"
 			;;
 		nvim)
-			# Nvim output: "NVIM v0.12.4\n..." -> "v0.12.4"
-			CURRENT_VER=$(nvim --version | head -n1 | extract_version)
+			# Nvim output: "NVIM v0.11.5" -> Extract "v0.11.5"
+			CURRENT_VER=$(nvim --version | head -n1 | grep -o "v[0-9].*")
 			TARGET_VER="$NVIM_VERSION"
 			;;
 		tmux)
-			# Tmux output: "tmux 3.5a" -> "3.5a"
-			CURRENT_VER=$(tmux -V | extract_version)
+			# Tmux output: "tmux 3.3a" -> Extract "3.3a"
+			CURRENT_VER=$(tmux -V | awk '{print $2}')
 			TARGET_VER="$TMUX_VERSION"
 			;;
 		stow)
-			# Stow output: "stow (GNU Stow) 2.4.1" -> "2.4.1"
-			CURRENT_VER=$(stow --version | extract_version)
+			# Stow output: "stow (GNU Stow) 2.3.1" -> Extract "2.3.1"
+			CURRENT_VER=$(stow --version | awk '{print $NF}')
 			TARGET_VER="$STOW_VERSION"
 			;;
 		rg)
-			# rg output: "ripgrep 15.1.0 (rev ...)" -> "15.1.0"
-			CURRENT_VER=$(rg --version | head -n1 | extract_version)
+			# rg output: "ripgrep 15.1.0" -> Extract "15.1.0"
+			CURRENT_VER=$(rg --version | head -n1 | awk '{print $2}')
 			TARGET_VER="$RG_VERSION"
 			;;
 		fd)
-			# fd output: "fd 10.3.0" -> "10.3.0"
-			CURRENT_VER=$(fd --version | extract_version)
+			# fd output: "fd 10.3.0" -> Extract "10.3.0"
+			CURRENT_VER=$(fd --version | awk '{print $2}')
 			TARGET_VER="$FD_VERSION"
 			;;
 		tree-sitter)
-			# tree-sitter output: "tree-sitter 0.26.6" -> "0.26.6"
-			CURRENT_VER=$(tree-sitter --version | extract_version)
+			# tree-sitter output: "tree-sitter 0.26.6" -> Extract "0.26.6"
+			CURRENT_VER=$(tree-sitter --version | awk '{print $2}')
 			TARGET_VER="$TREE_SITTER_VERSION"
 			;;
 		curl)
-			# curl output: "curl 8.21.0 (...) libcurl/8.21.0 ..." -> "8.21.0"
-			CURRENT_VER=$(curl --version | head -n1 | extract_version)
+			# curl output: "curl 8.21.0 (...)" -> Extract "8.21.0"
+			CURRENT_VER=$(curl --version | head -n1 | awk '{print $2}')
 			TARGET_VER="$CURL_VERSION"
 			;;
 		clang)
-			# clang output varies by distro/vendor ("Ubuntu clang version
-			# 20.1.8 (2ubuntu8)", "Debian clang version 20.1.8 (11)", plain
-			# upstream "clang version 20.1.8", "Apple clang version 15.0.0",
-			# ...) -- extract_version finds the version regardless of what
-			# comes before it, then we keep only the major series, since
-			# the exact patch/revision is resolved dynamically at install
-			# time rather than pinned.
-			CURRENT_VER=$(clang --version | head -n1 | extract_version | cut -d. -f1)
+			# clang output: "Ubuntu clang version 20.1.8 (2ubuntu8)" -> just
+			# compare major series, since the exact patch/revision is
+			# resolved dynamically at install time rather than pinned.
+			CURRENT_VER=$(clang --version | head -n1 | grep -oE '[0-9]+' | head -1)
 			TARGET_VER="$CLANG_SERIES"
 			;;
 		clang-tidy)
-			# Same reasoning as clang above.
-			CURRENT_VER=$(clang-tidy --version | head -n1 | extract_version | cut -d. -f1)
+			# clang-tidy output: "Ubuntu LLVM version 20.1.2" -> major series only
+			CURRENT_VER=$(clang-tidy --version | head -n1 | grep -oE '[0-9]+' | head -1)
 			TARGET_VER="$CLANG_SERIES"
 			;;
 		clangd)
-			# clangd output: "clangd version 22.1.6 (https://...)" -> "22.1.6"
-			CURRENT_VER=$(clangd --version | head -n1 | extract_version)
+			# clangd output: "clangd version 22.1.6 (...)" -> Extract "22.1.6"
+			CURRENT_VER=$(clangd --version | head -n1 | awk '{print $3}')
 			TARGET_VER="$CLANGD_VERSION"
 			;;
 		rclone)
-			# rclone output: "rclone v1.74.4" -> "v1.74.4"
-			CURRENT_VER=$(rclone version | head -n1 | extract_version)
+			# rclone output: "rclone v1.74.4" -> Extract "v1.74.4"
+			CURRENT_VER=$(rclone version | head -n1 | awk '{print $2}')
 			TARGET_VER="$RCLONE_VERSION"
 			;;
 		pixi)
-			# pixi output: "pixi 0.73.0" -> "0.73.0"
-			CURRENT_VER=$(pixi --version | extract_version)
+			# pixi output: "pixi 0.73.0" -> Extract "0.73.0"
+			CURRENT_VER=$(pixi --version | awk '{print $2}')
 			TARGET_VER="$PIXI_VERSION"
 			;;
 		uv)
-			# uv output: "uv 0.11.29 (...)" -> "0.11.29"
-			CURRENT_VER=$(uv --version | extract_version)
+			# uv output: "uv 0.11.29 (...)" -> Extract "0.11.29"
+			CURRENT_VER=$(uv --version | awk '{print $2}')
 			TARGET_VER="$UV_VERSION"
 			;;
 		*)

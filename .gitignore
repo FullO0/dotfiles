@@ -1,2 +1,5 @@
 bash/.config/bash/local_script.sh
 bash/.config/bash/api_keys.sh
+# pixi environments
+.pixi/*
+!.pixi/config.toml
