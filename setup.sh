@@ -414,13 +414,6 @@ install_uv() {
 
 	rm -rf "$TEMP_DIR"
 	echo "uv installed"
-
-	echo "Setting up nvim's dedicated Python venv..."
-	local NVIM_VENV="$HOME/.local/.venv/nvim"
-	mkdir -p "$HOME/.local/.venv"
-	"$LOCAL_BIN/uv" venv "$NVIM_VENV"
-	"$LOCAL_BIN/uv" pip install --python "$NVIM_VENV/bin/python" pynvim
-	echo "nvim's Python venv ready at $NVIM_VENV (point g:python3_host_prog at $NVIM_VENV/bin/python)"
 }
 
 # --- TOOLS DETECTION ---
@@ -593,3 +586,11 @@ for tool in "${tools[@]}"; do
 		esac
 	fi
 done
+
+
+echo "Setting up nvim's dedicated Python venv..."
+NVIM_VENV="$HOME/.local/.venv/nvim"
+mkdir -p "$HOME/.local/.venv"
+uv venv --seed "$NVIM_VENV"
+uv pip install --venv "$NVIM_VENV" pynvim pip setuptools
+echo "nvim's Python venv ready at $NVIM_VENV (point g:python3_host_prog at $NVIM_VENV/bin/python)"
