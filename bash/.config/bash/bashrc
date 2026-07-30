@@ -24,8 +24,15 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_STATE_HOME="$HOME/.local/state"
 
-# Git Global config file location
+# Force tools to follow XDG standard
 export GIT_CONFIG_GLOBAL="$XDG_CONFIG_HOME/git/config"
+export CLAUDE_CONFIG_DIR="$XDG_CONFIG_HOME/claude"
+export JUPYTER_CONFIG_DIR="$XDG_CONFIG_HOME/jupyter"
+export JUPYTER_DATA_DIR="$XDG_DATA_HOME/jupyter"
+export COPILOT_HOME="$XDG_CONFIG_HOME/copilot"
+export OLLAMA_MODELS="$XDG_DATA_HOME/ollama"
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
+export NPM_CONFIG_CACHE="$XDG_STATE_HOME/npm"
 
 # add .local/bin with highest priority
 export PATH="$HOME/.local/bin:$PATH"
@@ -33,16 +40,12 @@ export PATH="$HOME/.local/bin:$PATH"
 # Change history path to match XDG standards
 export HISTFILE="$XDG_STATE_HOME/bash/history"
 
+# LangSmith Settings
+export LANGSMITH_TRACING=true
+
 # Set default editor and visual
 export EDITOR="nvim"
 export VISUAL="nvim"
-
-# Force claude to follow XDG standards
-export CLAUDE_CONFIG_DIR="$XDG_CONFIG_HOME/claude"
-
-# Force Jupyter to follow XDG standards
-export JUPYTER_CONFIG_DIR="$XDG_CONFIG_HOME/jupyter"
-export JUPYTER_DATA_DIR="$XDG_DATA_HOME/jupyter"
 
 # ---------------------------------
 

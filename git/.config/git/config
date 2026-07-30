@@ -1,6 +1,6 @@
 [user]
 	email = christian@vanderwalts.net
-	name = Christian
+	name = Christian van der Walt
 
 [core]
 	editor = nvim
