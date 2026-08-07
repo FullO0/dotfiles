@@ -2,6 +2,12 @@
 build
 bin
 node_modules
+target
+
+# Maven
+.settings
+.classpath
+.project
 
 #########
 ### C ###
