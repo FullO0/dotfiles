@@ -110,5 +110,6 @@ eval "$(starship init bash)"
 if [ ! -n "$TMUX" ]; then
 	echo ""
 	echo ""
+	tmux new -A -s main
 	fastfetch
 fi
