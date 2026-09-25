@@ -1,5 +1,8 @@
 bash/.config/bash/local_script.sh
 bash/.config/bash/api_keys.sh
+bash/.config/bash/bash_color.sh
+starship/.config/starship.toml
+tmux/.config/tmux/colors.tmux.conf
 # pixi environments
 .pixi/*
 !.pixi/config.toml

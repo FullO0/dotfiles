@@ -40,7 +40,7 @@ $(BASH_COLORS): $(COLORS_SRC)
 
 $(STARSHIP_CONFIG): $(COLORS_SRC) $(STARSHIP_BASE)
 	@echo "Generating Starship colors..."
-	@echo "palette = \"onedark_ansii\"\n" > $@
+	@echo "palette = \"onedark_ansii\"" > $@
 	@cat $(STARSHIP_BASE) >> $@
 	@printf "\n" >> $@
 	@cat $(COLORS_SRC) >> $@

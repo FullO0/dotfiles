@@ -519,12 +519,12 @@ for tool in "${tools[@]}"; do
 			# comes before it, then we keep only the major series, since
 			# the exact patch/revision is resolved dynamically at install
 			# time rather than pinned.
-			CURRENT_VER=$(clang --version | head -n1 | extract_version | cut -d. -f1)
+			CURRENT_VER=$(clang --version | head -n1 | extract_version)
 			TARGET_VER="$CLANG_SERIES"
 			;;
 		clang-tidy)
 			# Same reasoning as clang above.
-			CURRENT_VER=$(clang-tidy --version | head -n1 | extract_version | cut -d. -f1)
+			CURRENT_VER=$(clang-tidy --version | head -n2 | extract_version)
 			TARGET_VER="$CLANG_SERIES"
 			;;
 		clangd)
@@ -587,10 +587,26 @@ for tool in "${tools[@]}"; do
 	fi
 done
 
+set -euo pipefail
 
-echo "Setting up nvim's dedicated Python venv..."
-NVIM_VENV="$HOME/.local/.venv/nvim"
-mkdir -p "$HOME/.local/.venv"
-uv venv --seed "$NVIM_VENV"
-uv pip install --venv "$NVIM_VENV" pynvim pip setuptools
-echo "nvim's Python venv ready at $NVIM_VENV (point g:python3_host_prog at $NVIM_VENV/bin/python)"
+echo "Setting up nvim's dedicated pixi environment (python + node)..."
+
+NVIM_ENV_DIR="$HOME/.local/env/nvim"
+
+rm -rf "$NVIM_ENV_DIR"
+mkdir -p "$(dirname "$NVIM_ENV_DIR")"
+
+pixi init "$NVIM_ENV_DIR"
+cd "$NVIM_ENV_DIR"
+
+# --- Python provider ---
+pixi add python=3.13
+pixi add --pypi pynvim
+
+# --- Node provider ---
+pixi add nodejs
+pixi run npm install -g neovim
+
+PIXI_ENV_BIN="$NVIM_ENV_DIR/.pixi/envs/default/bin"
+
+echo "nvim's pixi environment ready at $NVIM_ENV_DIR"
