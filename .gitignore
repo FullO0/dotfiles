@@ -3,6 +3,10 @@ bash/.config/bash/api_keys.sh
 bash/.config/bash/bash_color.sh
 starship/.config/starship.toml
 tmux/.config/tmux/colors.tmux.conf
+alacritty/.config/alacritty/colors.toml
+fuzzel/.config/fuzzel/colors.ini
+hypr/.config/hypr/colors.lua
+sddm/themes/minimal-onedark/theme.conf
 # pixi environments
 .pixi/*
 !.pixi/config.toml

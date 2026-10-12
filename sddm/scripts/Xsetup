@@ -1,0 +1,6 @@
+#!/bin/sh
+# Xsetup - run as root before the SDDM login dialog appears
+# Turn off secondary monitor so SDDM only loads and focuses on the primary monitor (DP-1)
+if which xrandr >/dev/null 2>&1; then
+    xrandr --output HDMI-A-1 --off
+fi

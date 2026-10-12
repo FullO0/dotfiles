@@ -15,7 +15,7 @@ Usage:
 Each 4-tuple is resolved independently:
     id         key under [components.<id>] to read colors from
     name       base filename of the generated file (without extension)
-    file_type  output format: toml | bash | lua | conf (see FORMATTERS
+    file_type  output format: toml | bash | lua | conf | css | ini (see FORMATTERS
                below to add more)
     dir        output directory, relative to the current working directory
 
@@ -93,16 +93,33 @@ def resolve_path(dotted_path: str, root: dict) -> object:
 
 
 def resolve_color(value: object, root: dict, _chain: tuple[str, ...] = ()) -> str:
-    """Resolve a raw TOML value down to a literal hex color string,
+    """Resolve a raw TOML value down to a literal hex color string or configuration value,
     following 'a.b.c' style references through as many tiers as needed
     (component -> semantic -> primitive, or any other depth)."""
-    if isinstance(value, str) and value.startswith("#"):
-        return value
-    if not isinstance(value, str):
-        raise TypeError(f"expected a hex color or 'a.b.c' reference, got {value!r}")
-    if value in _chain:
-        raise ValueError("circular reference: " + " -> ".join((*_chain, value)))
-    return resolve_color(resolve_path(value, root), root, (*_chain, value))
+    if isinstance(value, (int, float, bool)):
+        return str(value)
+    if isinstance(value, str):
+        if (
+            value.startswith("#")
+            or value.startswith("rgba(")
+            or value.startswith("rgb(")
+            or "/" in value
+            or " " in value
+            or value.endswith(".jpg")
+            or value.endswith(".png")
+            or value.endswith(".svg")
+        ):
+            return value
+        if len(value) == 8 and all(c in "0123456789abcdefABCDEF" for c in value):
+            return value
+        try:
+            resolved = resolve_path(value, root)
+            if value in _chain:
+                raise ValueError("circular reference: " + " -> ".join((*_chain, value)))
+            return resolve_color(resolved, root, (*_chain, value))
+        except (KeyError, TypeError):
+            return value
+    raise TypeError(f"expected a string, number, or 'a.b.c' reference, got {value!r}")
 
 
 def flatten(section: dict, prefix: str = "") -> dict[str, object]:
@@ -144,7 +161,7 @@ def get_component_colors(component_id: str, root: dict) -> dict[str, str]:
     resolved: dict[str, str] = {}
     for key, value in flatten(section).items():
         try:
-            resolved[sanitize_key(key)] = resolve_color(value, root)
+            resolved[key] = resolve_color(value, root)
         except (KeyError, ValueError, TypeError) as exc:
             die(f"failed to resolve '{component_id}.{key}': {exc}")
     return resolved
@@ -171,31 +188,69 @@ def format_bash(component_id: str, colors: dict[str, str]) -> str:
         f"# component: {component_id}",
         "",
     ]
-    lines += [f'export {key}="{value}"' for key, value in colors.items()]
+    for key, value in colors.items():
+        safe = sanitize_key(key)
+        lines.append(f'export {safe}="{value}"')
+        if not safe.upper().startswith("COLOR_"):
+            lines.append(f'export COLOR_{safe.upper()}="{value}"')
     return "\n".join(lines) + "\n"
 
 
 def format_lua(component_id: str, colors: dict[str, str]) -> str:
     lines = [f"-- {GENERATED_HEADER}", f"-- component: {component_id}", "", "return {"]
-    lines += [f'  {key} = "{value}",' for key, value in colors.items()]
+    for key, value in colors.items():
+        safe = sanitize_key(key)
+        lines.append(f'  {safe} = "{value}",')
     lines.append("}")
     return "\n".join(lines) + "\n"
 
 
 def format_conf(component_id: str, colors: dict[str, str]) -> str:
-    # tmux-style: each color becomes a user option, referenced elsewhere in
-    # your tmux.conf as #{@key}. This keeps it usable directly as a `conf`
-    # tmux can `source-file`, rather than guessing at real tmux option names.
     lines = [f"# {GENERATED_HEADER}", f"# component: {component_id}", ""]
-    lines += [f'set -g @{key} "{value}"' for key, value in colors.items()]
+    if component_id == "tmux":
+        for key, value in colors.items():
+            safe = sanitize_key(key)
+            lines.append(f'set -g @{safe} "{value}"')
+    elif component_id == "sddm":
+        lines.append("[General]")
+        for key, value in colors.items():
+            lines.append(f"{key}={value}")
+    else:
+        for key, value in colors.items():
+            lines.append(f"{key}={value}")
+    return "\n".join(lines) + "\n"
+
+
+def format_css(component_id: str, colors: dict[str, str]) -> str:
+    lines = [f"/* {GENERATED_HEADER} */", f"/* component: {component_id} */", ""]
+    for key, value in colors.items():
+        css_name = key.replace("_", "-").replace(".", "-")
+        lines.append(f"@define-color {css_name} {value};")
+    return "\n".join(lines) + "\n"
+
+
+def format_ini(component_id: str, colors: dict[str, str]) -> str:
+    section_name = "colors" if component_id == "fuzzel" else component_id
+    lines = [f"# {GENERATED_HEADER}", f"# component: {component_id}", "", f"[{section_name}]"]
+    for key, value in colors.items():
+        val = value
+        if val.startswith("#"):
+            val = val[1:]
+            if len(val) == 6:
+                val = f"{val}ff"
+        ini_name = key.replace(".", "-")
+        lines.append(f"{ini_name} = {val}")
     return "\n".join(lines) + "\n"
 
 
 FORMATTERS: dict[str, Formatter] = {
     "toml": format_toml,
     "bash": format_bash,
+    "sh": format_bash,
     "lua": format_lua,
     "conf": format_conf,
+    "css": format_css,
+    "ini": format_ini,
 }
 
 

@@ -9,38 +9,21 @@
     // Block Group Positioning
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["custom/media"],
-    "modules-right": ["cpu", "memory", "network", "clock"],
+    "modules-right": [
+        "group/cpu-info",
+        "custom/gpu",
+        "memory",
+        "pulseaudio",
+        "network",
+        "clock"
+    ],
 
     // =====================================================================
-    // CORE MODULE DEFINTIONS
+    // CORE MODULE DEFINITIONS
     // =====================================================================
     "hyprland/workspaces": {
         "format": "{name}",
         "on-click": "activate"
-    },
-
-    "clock": {
-        "format": " {:%H:%M}",
-        "format-alt": " {:%A, %B %d, %Y}",
-        "tooltip-format": "<tt><small>{calendar}</small></tt>"
-    },
-
-    "cpu": {
-        "interval": 2,
-        "format": " {usage}%"
-    },
-
-    "memory": {
-        "interval": 2,
-        "format": " {percentage}%",
-        "tooltip-format": "Used: {used:0.1f}G / Total: {total:0.1f}G"
-    },
-
-    "network": {
-        "interface": "wlan0", 
-        "format-wifi": " {essid}",
-        "format-ethernet": "🖧 {ifname}",
-        "format-disconnected": "⚠ Disconnected"
     },
 
     "custom/media": {
@@ -50,5 +33,76 @@
         "max-length": 40,
         "exec": "playerctl -a metadata --format '{\"text\": \"{{artist}} - {{title}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' --follow",
         "on-click": "playerctl play-pause"
+    },
+
+    "group/cpu-info": {
+        "orientation": "horizontal",
+        "modules": ["cpu", "temperature#cpu"]
+    },
+
+    "cpu": {
+        "interval": 2,
+        "format": " {usage}%",
+        "tooltip": true
+    },
+
+    "temperature#cpu": {
+        "interval": 2,
+        "hwmon-path-abs": "/sys/devices/platform/coretemp.0/hwmon",
+        "input-filename": "temp1_input",
+        "critical-threshold": 80,
+        "format": " {temperatureC}°C",
+        "format-critical": " {temperatureC}°C",
+        "tooltip": true
+    },
+
+    "custom/gpu": {
+        "interval": 2,
+        "return-type": "json",
+        "exec": "~/.config/waybar/scripts/gpu.sh",
+        "format": "{}",
+        "tooltip": true
+    },
+
+    "memory": {
+        "interval": 2,
+        "format": " {percentage}%",
+        "tooltip-format": "Used: {used:0.1f}G / Total: {total:0.1f}G"
+    },
+
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-bluetooth": "󰂯 {icon} {volume}%",
+        "format-muted": "󰝟 Muted",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["", "", ""]
+        },
+        "scroll-step": 5,
+        "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+        "tooltip-format": "{desc} | {volume}%"
+    },
+
+    "network": {
+        "interval": 3,
+        "format-wifi": " {essid}",
+        "format-ethernet": "󰈀 {ifname}",
+        "format-linked": "󰈀 {ifname} (No IP)",
+        "format-disconnected": "󰖪 Disconnected",
+        "tooltip-format": "󰈀 {ifname} via {gwaddr}",
+        "tooltip-format-wifi": " {essid} ({signalStrength}%)\nIP: {ipaddr}",
+        "tooltip-format-ethernet": "󰈀 {ifname}\nIP: {ipaddr}\nGateway: {gwaddr}",
+        "tooltip-format-disconnected": "Disconnected"
+    },
+
+    "clock": {
+        "format": " {:%H:%M}",
+        "format-alt": " {:%A, %B %d, %Y}",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>"
     }
 }

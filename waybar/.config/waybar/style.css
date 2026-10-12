@@ -8,7 +8,7 @@
  * ===================================================================== */
 window#waybar {
     background-color: transparent;
-    color: @text-main; /* Dynamic variable */
+    color: @text-main;
     font-family: "JetBrainsMono Nerd Font", monospace;
     font-size: 13px;
     font-weight: bold;
@@ -17,34 +17,131 @@ window#waybar {
 /* Individual Module Block Styling */
 #workspaces,
 #custom-media,
-#cpu,
+#cpu-info,
+#group-cpu-info,
+#custom-gpu,
 #memory,
+#pulseaudio,
 #network,
 #clock {
-    background-color: @theme-bg; /* Dynamic variable */
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: @theme-bg;
+    border: 1px solid @theme-border;
     border-radius: 8px;
     padding: 2px 12px;
     margin: 0 4px;
 }
 
-/* Active Workspace Dot Highlight */
+/* =====================================================================
+ * LEFT: WORKSPACES
+ * ===================================================================== */
+#workspaces {
+    padding: 2px 4px;
+}
+
+#workspaces button {
+    padding: 0 6px;
+    color: @text-muted;
+    background-color: transparent;
+    border: none;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+}
+
+#workspaces button:hover {
+    color: @text-main;
+    background-color: @theme-bg-hover;
+}
+
 #workspaces button.active {
-    color: @accent-lavender; /* Dynamic variable */
-    border-bottom: 2px solid @accent-lavender;
+    color: @accent-green;
+    border-bottom: 2px solid @accent-green;
 }
 
 #workspaces button.urgent {
-    background-color: @status-critical; /* Dynamic variable */
+    background-color: @status-critical;
     color: @theme-bg-solid;
+    border-radius: 6px;
 }
 
-/* Highlight Critical System Usage Metrics */
-#cpu.warning, #memory.warning {
+/* =====================================================================
+ * CENTER: MEDIA PLAYER
+ * ===================================================================== */
+#custom-media {
+    color: @accent-blue;
+}
+
+/* =====================================================================
+ * RIGHT: SYSTEM STATUS & CONTROLS
+ * ===================================================================== */
+
+/* CPU Group (Usage & Temperature) */
+#group-cpu-info,
+#cpu-info {
+    padding: 2px 8px;
+}
+
+#group-cpu-info #cpu,
+#group-cpu-info #temperature,
+#cpu-info #cpu,
+#cpu-info #temperature {
+    background: transparent;
+    border: none;
+    padding: 0 4px;
+    margin: 0;
+}
+
+#group-cpu-info #temperature,
+#cpu-info #temperature {
+    color: @accent-blue;
+}
+
+/* GPU */
+#custom-gpu {
+    color: @text-main;
+}
+
+/* Memory */
+#memory {
+    color: @text-main;
+}
+
+/* Volume / Audio */
+#pulseaudio {
+    color: @text-main;
+}
+
+#pulseaudio.muted {
+    color: @text-muted;
+}
+
+/* Network */
+#network {
+    color: @text-main;
+}
+
+#network.disconnected {
     color: @status-warning;
 }
 
-#cpu.critical, #memory.critical {
+/* Clock */
+#clock {
+    color: @text-main;
+}
+
+/* =====================================================================
+ * STATES & WARNINGS
+ * ===================================================================== */
+#cpu.warning,
+#memory.warning,
+#temperature.warning,
+#custom-gpu.warning {
+    color: @status-warning;
+}
+
+#cpu.critical,
+#memory.critical,
+#temperature.critical,
+#custom-gpu.critical {
     color: @status-critical;
     animation-name: blink;
     animation-duration: 0.5s;
