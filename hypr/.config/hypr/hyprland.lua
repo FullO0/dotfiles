@@ -176,7 +176,7 @@ hl.curve("almostLinear", { type = "bezier", points = { { 0.5, 0.5 }, { 0.75, 1 }
 hl.curve("quick", { type = "bezier", points = { { 0.15, 0 }, { 0.1, 1 } } })
 
 -- Default springs
-hl.curve("easy", { type = "spring", mass = 1, stiffness = 71.2633, dampening = 15.8273644 })
+hl.curve("easy", { type = "spring", mass = 1, stiffness = 71.2633, damping = 15.8273644 })
 
 hl.animation({ leaf = "global", enabled = true, speed = 10, bezier = "default" })
 hl.animation({ leaf = "border", enabled = true, speed = 5.39, bezier = "easeOutQuint" })
@@ -394,7 +394,6 @@ hl.workspace_rule({
 	monitor = moniter1,
 	default = true,
 	default_name = "Terminal",
-	on_created_empty = terminal,
 })
 
 hl.workspace_rule({
@@ -402,7 +401,6 @@ hl.workspace_rule({
 	monitor = moniter2,
 	default = true,
 	default_name = "Work Browser",
-	on_created_empty = browser .. " -P Work",
 })
 
 hl.window_rule({
@@ -421,14 +419,12 @@ hl.workspace_rule({
 	workspace = "3",
 	monitor = moniter1,
 	default_name = "Steam / Games",
-	on_created_empty = "steam",
 })
 
 hl.workspace_rule({
 	workspace = "4",
 	monitor = moniter2,
 	default_name = "Personal Browser",
-	on_created_empty = browser .. " -P Personal",
 })
 
 hl.window_rule({
@@ -457,6 +453,25 @@ hl.workspace_rule({
 --------------------------------
 ------ WORKSPACES HOOKS --------
 --------------------------------
+
+-- Launch default applications when workspaces are created empty
+local workspace_programs = {
+	[1] = terminal,
+	[2] = browser .. " -P Work",
+	[3] = "steam",
+	[4] = browser .. " -P Personal",
+}
+
+hl.on("workspace.created", function(ws)
+	if not ws.is_empty then
+		return
+	end
+
+	local cmd = ws.id and workspace_programs[ws.id]
+	if cmd then
+		hl.exec_cmd(cmd, { workspace = tostring(ws.id) .. " silent" })
+	end
+end)
 
 -- Idle enviroment change wallpaper
 hl.on("workspace.active", function(ws)
