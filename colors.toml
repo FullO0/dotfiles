@@ -348,3 +348,12 @@ accent = "semantics.main"
 accentBlue = "semantics.info"
 warning = "semantics.warning"
 error = "semantics.error"
+
+[components.firefox]
+personal_accent = "semantics.main"
+work_accent = "semantics.info"
+temporary_accent = "semantics.warning"
+bg = "semantics.bg"
+bg_dark = "semantics.bg_dark"
+fg = "semantics.fg"
+border = "semantics.border"

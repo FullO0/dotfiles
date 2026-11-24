@@ -1,0 +1,16 @@
+@import url("../../common/colors.css");
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+:root {
+  --tab-active-accent: var(--work-accent, #87d7ff);
+}
+
+/* Subtle accent line on active tab */
+.tab-background[selected="true"] {
+  border-top: 2px solid var(--tab-active-accent) !important;
+}
+
+/* URL bar focus highlight */
+#urlbar[focused="true"] > #urlbar-background {
+  border-color: var(--tab-active-accent) !important;
+}

@@ -7,6 +7,17 @@ alacritty/.config/alacritty/colors.toml
 fuzzel/.config/fuzzel/colors.ini
 hypr/.config/hypr/colors.lua
 sddm/themes/minimal-onedark/theme.conf
+firefox/.config/mozilla/firefox/common/colors.css
 # pixi environments
 .pixi/*
 !.pixi/config.toml
+
+# Firefox runtime files (allowlist only tracked dotfiles)
+firefox/.config/mozilla/firefox/*
+!firefox/.config/mozilla/firefox/profiles.ini
+!firefox/.config/mozilla/firefox/*/
+firefox/.config/mozilla/firefox/*/*
+!firefox/.config/mozilla/firefox/*/user.js
+!firefox/.config/mozilla/firefox/*/chrome/
+firefox/.config/mozilla/firefox/*/chrome/*
+!firefox/.config/mozilla/firefox/*/chrome/userChrome.css

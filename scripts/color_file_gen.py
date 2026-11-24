@@ -223,9 +223,16 @@ def format_conf(component_id: str, colors: dict[str, str]) -> str:
 
 def format_css(component_id: str, colors: dict[str, str]) -> str:
     lines = [f"/* {GENERATED_HEADER} */", f"/* component: {component_id} */", ""]
-    for key, value in colors.items():
-        css_name = key.replace("_", "-").replace(".", "-")
-        lines.append(f"@define-color {css_name} {value};")
+    if component_id == "firefox":
+        lines.append(":root {")
+        for key, value in colors.items():
+            css_name = key.replace("_", "-").replace(".", "-")
+            lines.append(f"  --{css_name}: {value};")
+        lines.append("}")
+    else:
+        for key, value in colors.items():
+            css_name = key.replace("_", "-").replace(".", "-")
+            lines.append(f"@define-color {css_name} {value};")
     return "\n".join(lines) + "\n"
 
 

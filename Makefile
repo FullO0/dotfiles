@@ -36,9 +36,13 @@ HYPR_COLORS     = $(HYPR_CONFIG_DIR)/colors.lua
 SDDM_THEME_DIR  = sddm/themes/minimal-onedark
 SDDM_COLORS     = $(SDDM_THEME_DIR)/theme.conf
 
-STOW = vim tmux starship nvim bash git hypr waybar fuzzel alacritty
+# firefox
+FIREFOX_COMMON_DIR = firefox/.config/mozilla/firefox/common
+FIREFOX_COLORS     = $(FIREFOX_COMMON_DIR)/colors.css
 
-ALL_GENERATED_COLORS = $(BASH_COLORS) $(TMUX_COLORS) $(NVIM_COLORS) $(WAYBAR_COLORS) $(ALACRITTY_COLORS) $(FUZZEL_COLORS) $(HYPR_COLORS) $(SDDM_COLORS)
+STOW = vim tmux starship nvim bash git hypr waybar fuzzel alacritty firefox
+
+ALL_GENERATED_COLORS = $(BASH_COLORS) $(TMUX_COLORS) $(NVIM_COLORS) $(WAYBAR_COLORS) $(ALACRITTY_COLORS) $(FUZZEL_COLORS) $(HYPR_COLORS) $(SDDM_COLORS) $(FIREFOX_COLORS)
 
 .PHONY: all stowall apply clean install install-sddm
 
@@ -62,7 +66,8 @@ $(ALL_GENERATED_COLORS): $(COLORS_SRC) scripts/color_file_gen.py
 		alacritty colors toml $(ALACRITTY_CONFIG_DIR) \
 		fuzzel colors ini $(FUZZEL_CONFIG_DIR) \
 		hypr colors lua $(HYPR_CONFIG_DIR) \
-		sddm theme conf $(SDDM_THEME_DIR)
+		sddm theme conf $(SDDM_THEME_DIR) \
+		firefox colors css $(FIREFOX_COMMON_DIR)
 	@tmux source-file $(TMUX_CONFIG_DIR)/tmux.conf 2>/dev/null || true
 
 $(STARSHIP_CONFIG): $(COLORS_SRC) $(STARSHIP_BASE)
